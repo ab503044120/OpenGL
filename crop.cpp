@@ -134,7 +134,8 @@ int main() {
     // 加载图片
     int image_width, image_height, image_channels;
     stbi_set_flip_vertically_on_load(true);
-    unsigned char *image_data = stbi_load("pic3.jpg", &image_width, &image_height, &image_channels, 0);
+//    unsigned char *image_data = stbi_load("pic1.jpg", &image_width, &image_height, &image_channels, 0);
+    unsigned char *image_data = stbi_load("mesh.png", &image_width, &image_height, &image_channels, 0);
     if (image_data == NULL) {
         std::cout << "Failed to load image!" << std::endl;
         return -1;
@@ -149,7 +150,7 @@ int main() {
     // 计算裁剪后的图片纹理坐标
     float aspect_ratio = (asp1 < asp2) ? (asp1 / asp2) : (asp2 / asp1);
     float crop_width = (asp1 < asp2) ? aspect_ratio : 1.0f;
-    float crop_height = (asp1 > asp2) ? 1.0f / aspect_ratio : 1.0f;
+    float crop_height = (asp1 > asp2) ?  aspect_ratio : 1.0f;
     float crop_x = (1.0f - crop_width) / 2.0f;
     float crop_y = (1.0f - crop_height) / 2.0f;
     float tex_coords[] = {
@@ -170,7 +171,9 @@ int main() {
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     // 加载图片数据到纹理中
     GLenum format = (image_channels == 4) ? GL_RGBA : GL_RGB;
+    glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
     glTexImage2D(GL_TEXTURE_2D, 0, format, image_width, image_height, 0, format, GL_UNSIGNED_BYTE, image_data);
+    glPixelStorei(GL_UNPACK_ALIGNMENT, 4);
     // 生成多级渐远纹理
     glGenerateMipmap(GL_TEXTURE_2D);
     // 释放图片数据
